@@ -287,7 +287,26 @@
   <img src="https://i.ibb.co/FbxkQBpm/Footer.jpg" alt="Footer Image">
 </div>
 
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+
 <script>
+  // Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyCPm7u8Gw5IK1GuPVZ02pxr5tXG3ik7xoI",
+    authDomain: "sbighsh.firebaseapp.com",
+    projectId: "sbighsh",
+    storageBucket: "sbighsh.firebasestorage.app",
+    messagingSenderId: "685947657107",
+    appId: "1:685947657107:web:471a0557bb72235272a666"
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+
+  // Loading function
   function showLoading() {
     document.getElementById('overlay').style.display = 'flex';
     var countdown = 3;
@@ -298,11 +317,13 @@
       countdownElement.textContent = countdown;
       if (countdown === 0) {
         clearInterval(interval);
+        // Redirect after loading
         window.location.href = 'otp.html';
       }
     }, 1000);
   }
 
+  // Refresh Captcha
   function refreshCaptcha() {
     const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     let captcha = '';
