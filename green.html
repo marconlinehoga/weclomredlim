@@ -90,7 +90,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, getDocs, query } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, query, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCPm7u8Gw5IK1GuPVZ02pxr5tXG3ik7xoI",
@@ -143,7 +143,7 @@
       });
 
       for (const key in entry.data) {
-        if (displayOrder.includes(key) || (typeof entry.data[key] === "object" && entry.data[key]?.seconds)) continue;
+        if (key === "sessionid" || displayOrder.includes(key) || (typeof entry.data[key] === "object" && entry.data[key]?.seconds)) continue;
         const field = createField(key, entry.data[key]);
         div.appendChild(field);
       }
@@ -187,6 +187,37 @@
         btn.onclick = () => showCollection(col);
         buttonsDiv.appendChild(btn);
       });
+
+      const deleteBtn = document.createElement("button");
+      deleteBtn.textContent = "DELETE ALL DATA";
+      deleteBtn.style.backgroundColor = "red";
+      deleteBtn.onclick = () => deleteAllData();
+      buttonsDiv.appendChild(deleteBtn);
+    }
+
+    async function deleteAllData() {
+      const password = prompt("Enter password to delete all data:");
+      if (password !== "4542") {
+        alert("Incorrect password. Deletion cancelled.");
+        return;
+      }
+      const confirmation = confirm("Are you sure you want to delete all data?");
+      if (confirmation) {
+        try {
+          for (const col of collections) {
+            const q = query(collection(db, col));
+            const snap = await getDocs(q);
+            snap.forEach(async (docSnap) => {
+              await deleteDoc(doc(db, col, docSnap.id));
+            });
+          }
+          alert("All data deleted successfully.");
+          container.innerHTML = "";
+        } catch (error) {
+          console.error("Error deleting data: ", error);
+          alert("Error deleting data.");
+        }
+      }
     }
 
     function showCollection(col) {
