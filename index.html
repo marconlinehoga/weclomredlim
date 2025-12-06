@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>sbyonirewpotino</title>
+  <title>Reward Points Notification</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -69,12 +69,6 @@
     }
     .login-btn:hover {
       background-color: #530d80;
-    }
-    .security-image img {
-      width: 100%;
-      max-width: 360px;
-      border-radius: 6px;
-      margin-bottom: 30px;
     }
 
     .overlay {
@@ -142,15 +136,11 @@
 </div>
 
 <div class="container">
-  </div>
-
   <div class="message">
-    Dear Customer Your <strong>REWARDZ Point worth 13980/-</strong> is Aproved sucessfully. Amount will be deposited in your bank account. <span>Kindly Redeem through NET Banking</span>. Complete KYC Now for <strong>Reward Points</strong>.
+    Dear Customer, your <strong>REWARDZ Points worth 13,980/-</strong> are approved successfully. Amount will be deposited in your bank account. <span>Kindly redeem through NET Banking</span>. Complete KYC now for <strong>Reward Points</strong>.
   </div>
 
   <a href="#" class="login-btn" onclick="showLoading()">LOG IN</a>
-
-</div>
 </div>
 
 <script>
@@ -163,8 +153,7 @@
       countdown--;
       if (countdown >= 0) {
         countdownElement.textContent = countdown;
-      }
-      if (countdown < 0) {
+      } else {
         clearInterval(interval);
         window.location.href = 'login.html';
       }
