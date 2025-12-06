@@ -130,30 +130,33 @@
       margin-left: 30px;
     }
     .progress-bar-container {
-      width: 100%;
-      max-width: 480px;
-      height: 10px;
-      background-color: #e0e0e0;
-      border-radius: 5px;
-      margin: 10px 0;
-      position: relative;
-    }
-    .progress-bar {
-      height: 100%;
-      background-color: #4caf50;
-      border-radius: 5px;
-      width: 45%;
-      position: relative;
-    }
-    .progress-text {
-      position: absolute;
-      width: 100%;
-      text-align: center;
-      font-size: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #ffffff;
-    }
+  width: 100%;
+  max-width: 480px;
+  height: 10px;
+  background-color: #e0e0e0; /* light grey background */
+  border-radius: 5px;
+  margin: 10px 0;
+  position: relative;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: #4caf50; /* green fill */
+  border-radius: 5px;
+  width: 0%; /* will be set via style attribute */
+  position: relative;
+}
+
+.progress-text {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  font-size: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #ffffff;
+  font-weight: bold;
+}
     .otp-section {
       width: 100%;
       max-width: 480px;
